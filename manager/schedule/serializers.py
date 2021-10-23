@@ -18,6 +18,8 @@ class TaskSerializer(serializers.Serializer):
     text = serializers.CharField()
     task_type = serializers.CharField(validators=[validate_task_type])
 
+    scheduled_for = serializers.CharField()
+
     def create(self, validated_data):
         return Task.objects.create(
             user_id=validated_data['user_id'],
@@ -52,7 +54,12 @@ class TaskSerializer(serializers.Serializer):
             raise exceptions.ValidationError('task must start before it ends.')
 
         data['created_on'] = datetime.combine(datetime.today(), time.min)
-        data['scheduled_for'] = data['created_on'] + timedelta(days=1)
+
+        try:
+            data['scheduled_for'] = datetime.strptime(data['scheduled_for'], '%Y-%m-%d')
+
+        except:
+            raise exceptions.ValidationError('invalid date.')
 
         # prevent overlapping tasks
 

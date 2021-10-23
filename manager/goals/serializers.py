@@ -15,6 +15,8 @@ class GoalSerializer(serializers.Serializer):
     text = serializers.CharField()
     category = serializers.CharField(validators=[validate_goal_category])
 
+    scheduled_for = serializers.CharField()
+
     def create(self, validated_data):
         return Goal.objects.create(
             user_id=validated_data['user_id'],
@@ -42,6 +44,11 @@ class GoalSerializer(serializers.Serializer):
             raise exceptions.ObjectDoesNotExist('invalid user id')
 
         data['created_on'] = datetime.combine(datetime.today(), time.min)
-        data['scheduled_for'] = data['created_on'] + timedelta(days=1)
+        
+        try:
+            data['scheduled_for'] = datetime.strptime(data['scheduled_for'], '%Y-%m-%d')
+
+        except:
+            raise exceptions.ValidationError('invalid date.')
 
         return data

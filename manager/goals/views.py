@@ -4,6 +4,8 @@ from rest_framework.permissions import IsAuthenticated
 
 from django.core import exceptions
 
+from datetime import datetime
+
 from .models import Goal
 from .serializers import GoalSerializer
 
@@ -15,7 +17,19 @@ class GoalViewSet(viewsets.ViewSet):
     def get(self, request, *args, **kwargs):
         data = Goal.objects.filter(user_id=request.user)
 
-        # filter by date
+        if 'before' in request.GET:
+            try:
+                data = data.filter(scheduled_for__lte=datetime.strptime(request.GET['before'], '%Y-%m-%d').date())
+
+            except:
+                raise exceptions.ValidationError('invalid before date.')
+
+        if 'after' in request.GET:
+            try:
+                data = data.filter(scheduled_for__gte=datetime.strptime(request.GET['after'], '%Y-%m-%d').date())
+
+            except:
+                raise exceptions.ValidationError('invalid after date.')
 
         data = [{
             'id': goal.id,
