@@ -152,5 +152,5 @@ AUTH_USER_MODEL = 'authentication.User'
 
 # Heroku
 
-#import django_on_heroku
-#django_on_heroku.settings(locals())
+import django_on_heroku
+django_on_heroku.settings(locals())
