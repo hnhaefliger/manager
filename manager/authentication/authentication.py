@@ -58,18 +58,18 @@ class AuthenticationBackend(BaseAuthentication):
         Validate a token with the database.
         '''
         try:
-            token = self.model.objects.select_related('user').get(token=hash_token(key))
+            token = self.model.objects.select_related('user_id').get(token=hash_token(key))
 
         except self.model.DoesNotExist:
             raise exceptions.AuthenticationFailed('invalid token.')
 
-        if not token.user.is_active:
+        if not token.user_id.is_active:
             raise exceptions.AuthenticationFailed('invalid token')
 
-        if not token.user.confirmed:
+        if not token.user_id.confirmed:
             raise exceptions.AuthenticationFailed('this account has not been confirmed yet.')
 
-        return (token.user, token)
+        return (token.user_id, token)
 
     def authenticate_header(self, request):
         '''

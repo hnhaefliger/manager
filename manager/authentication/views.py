@@ -9,16 +9,10 @@ from .utils import get_authorization_header, hash_token
 
 
 class UserViewSet(viewsets.ViewSet):
-    '''
-    Viewset for creating a new user.
-    '''
     permission_classes = (AllowAny,)
-    lookup_url_kwarg = 'lookup_value'
+    lookup_url_kwarg = 'user'
 
     def get(self, request, *args, **kwargs):
-        '''
-        Get information on the currently logged-in user.
-        '''
         if request.user.is_authenticated:
             return Response(data={
                 'first_name': request.user.first_name,
@@ -31,9 +25,6 @@ class UserViewSet(viewsets.ViewSet):
             raise exceptions.NotAuthenticated('you are not logged in.')
 
     def create(self, request, *args, **kwargs):
-        '''
-        Sign up.
-        '''
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -41,9 +32,6 @@ class UserViewSet(viewsets.ViewSet):
         return Response(status=status.HTTP_201_CREATED)
 
     def patch(self, request, *args, **kwargs):
-        '''
-        Update user data.
-        '''
         if request.user.is_authenticated:
             if 'old_password' in request.data:
                 if request.user.check_password(request.data['old_password']):
@@ -63,9 +51,6 @@ class UserViewSet(viewsets.ViewSet):
             raise exceptions.NotAuthenticated('you are not logged in.')
 
     def delete(self, request, *args, **kwargs):
-        '''
-        Delete a user account.
-        '''
         if request.user.is_authenticated:
             if 'password' in request.data:
                 if request.user.check_password(request.data['password']):
@@ -85,9 +70,6 @@ class UserViewSet(viewsets.ViewSet):
 
 
 class TokenViewSet(viewsets.ViewSet):
-    '''
-    Viewset for logging in and out.
-    '''
     permission_classes = (AllowAny,)
 
     def create(self, request, *args, **kwargs):
@@ -101,9 +83,6 @@ class TokenViewSet(viewsets.ViewSet):
         return Response(data={'token': token}, status=status.HTTP_201_CREATED)
 
     def delete(self, request, *args, **kwargs):
-        '''
-        Log out. 
-        '''
         auth = get_authorization_header(request).split()
 
         if auth and len(auth) == 2 and auth[0] == b'Token':

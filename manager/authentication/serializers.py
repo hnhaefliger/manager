@@ -10,9 +10,6 @@ from .models import User, Token
 
 
 class UserSerializer(serializers.Serializer):
-    '''
-    Serializer for the user class.
-    '''
     first_name = serializers.CharField(validators=(validate_name,))
     last_name = serializers.CharField(validators=(validate_name,))
 
@@ -21,9 +18,6 @@ class UserSerializer(serializers.Serializer):
     password = serializers.CharField(validators=(validate_password,))
 
     def create(self, validated_data):
-        '''
-        Create a new user.
-        '''
         return User.objects.create(
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
@@ -34,9 +28,6 @@ class UserSerializer(serializers.Serializer):
         )
 
     def update(self, instance, validated_data):
-        '''
-        Update a user's data.
-        '''
         instance.email = validated_data.get('email', instance.email)
         instance.phone = validated_data.get('phone', instance.phone)
         instance.username = validated_data.get('username', instance.username)
@@ -45,18 +36,12 @@ class UserSerializer(serializers.Serializer):
         return instance
 
     def validate(self, data):
-        '''
-        Validation for user.
-        '''
         data['password'] = make_password(data['password'])
 
         return data
 
 
 class TokenSerializer(serializers.Serializer):
-    '''
-    Serializer for the token class.
-    '''
     email = serializers.CharField()
     password = serializers.CharField()
 
@@ -66,18 +51,12 @@ class TokenSerializer(serializers.Serializer):
         return self.validated_data['token']
 
     def create(self, validated_data):
-        '''
-        Create a new login token.
-        '''
         return Token.objects.create(
-            user=validated_data['user'],
+            user_id=validated_data['user_id'],
             token=hash_token(validated_data['token'])
         )
 
     def validate(self, data):
-        '''
-        Verify user credentials.
-        '''
         user = authenticate(
             email=data['email'],
             password=data['password'],
@@ -90,6 +69,6 @@ class TokenSerializer(serializers.Serializer):
             raise exceptions.ConfirmationError('this account has not been confirmed yet.')
 
         else:
-            data['user'] = user
+            data['user_id'] = user
             data['token'] = create_token()
             return data

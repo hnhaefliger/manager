@@ -44,6 +44,8 @@ INSTALLED_APPS = [
 
     # local
     'authentication',
+    'goals',
+    'schedule',
 ]
 
 MIDDLEWARE = [
