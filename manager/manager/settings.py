@@ -26,7 +26,10 @@ SECRET_KEY = get_random_secret_key()
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    'https://henrys-manager.herokuapp.com/'
+]
 
 
 # Application definition
@@ -149,5 +152,5 @@ AUTH_USER_MODEL = 'authentication.User'
 
 # Heroku
 
-#import django_on_heroku
-#django_on_heroku.settings(locals())
+import django_on_heroku
+django_on_heroku.settings(locals())
