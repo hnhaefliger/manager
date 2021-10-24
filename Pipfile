@@ -8,6 +8,7 @@ django = "*"
 django-rest-framework = "*"
 django-on-heroku = "*"
 gunicorn = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 

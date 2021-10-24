@@ -24,12 +24,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = get_random_secret_key()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    'https://henrys-manager.herokuapp.com/',
+    'henrys-manager.herokuapp.com',
     'localhost',
 ]
+
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 
 # Application definition
@@ -43,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # 3rd party
+    'corsheaders',
     'rest_framework',
 
     # local
